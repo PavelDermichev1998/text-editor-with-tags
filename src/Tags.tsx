@@ -1,39 +1,31 @@
-import React, { ChangeEvent, useCallback } from 'react'
-import { EditableSpan } from './EditableSpan'
-import { Delete } from '@mui/icons-material';
-import IconButton from '@mui/material/IconButton';
-import Checkbox from '@mui/material/Checkbox';
-import { TaskType } from './Todolist'
+import React from 'react'
+import {TaskType} from './Todolist'
 
-type TaskPropsType = {
-    task: TaskType
+type TagPropsType = {
+    tasks: Array<TaskType>
     todolistId: string
-    changeTaskStatus: (id: string, isDone: boolean, todolistId: string) => void
-    changeTaskTitle: (taskId: string, newTitle: string, todolistId: string) => void
-    removeTask: (taskId: string, todolistId: string) => void
 }
-export const Task = React.memo((props: TaskPropsType) => {
-    const onClickHandler = useCallback(() => props.removeTask(props.task.id, props.todolistId), [props.task.id, props.todolistId]);
+export const Tags = React.memo((props: TagPropsType) => {
 
-    const onChangeHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        let newIsDoneValue = e.currentTarget.checked
-        props.changeTaskStatus(props.task.id, newIsDoneValue, props.todolistId)
-    }, [props.task.id, props.todolistId]);
+    let createTag = (arr: Array<string>) => {
+        let arrTitle = [...arr]
+        for (let i = 0; i <= arrTitle.length - 1; i++) {
+            let tagIndex = arrTitle[i].indexOf('#');
+            if (arrTitle[i].includes('#')) {
+                arrTitle[i] = arrTitle[i].slice(tagIndex, arrTitle[i].length)
+            } else {
+                delete arrTitle[i]
+            }
+        }
+        return arrTitle
+    }
 
-    const onTitleChangeHandler = useCallback((newValue: string) => {
-        props.changeTaskTitle(props.task.id, newValue, props.todolistId)
-    }, [props.task.id, props.todolistId]);
+    let arrTagsTitle = createTag(props.tasks.map(t => t.title))
+    let filterTags = arrTagsTitle.filter((item, index) => arrTagsTitle.indexOf(item) === index)
 
-    return <div key={props.task.id} className={props.task.isDone ? 'is-done' : ''}>
-        <Checkbox
-            checked={props.task.isDone}
-            color="primary"
-            onChange={onChangeHandler}
-        />
-
-        <EditableSpan value={props.task.title} onChange={onTitleChangeHandler}/>
-        <IconButton onClick={onClickHandler}>
-            <Delete/>
-        </IconButton>
-    </div>
+    return (
+        <div key={props.todolistId}>
+            {filterTags.map(t => <li>{t}</li>)}
+        </div>
+    )
 })

@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 import { Delete } from '@mui/icons-material';
 import { Task } from './Task'
 import { FilterValuesType } from './App';
+import {Tags} from "./Tags";
 
 export type TaskType = {
     id: string
@@ -86,6 +87,7 @@ export const Todolist = React.memo(function (props: PropsType) {
                     onClick={onCompletedClickHandler}
                     color={'secondary'}>Completed
             </Button>
+               <Tags tasks={tasksForTodolist} todolistId={props.id}/>
         </div>
     </div>
 })
