@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import './App.module.css';
-import { TaskType, Todolist } from './Todolist';
+import {TagType, TaskType, Todolist} from './Todolist';
 import { AddItemForm } from './AddItemForm';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -17,6 +17,7 @@ import {
 import { addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC } from './state/tasks-reducer';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppRootStateType } from './state/store';
+import {addTagAC} from "./state/tags-reducer";
 
 
 export type FilterValuesType = 'all' | 'active' | 'completed';
@@ -30,11 +31,17 @@ export type TasksStateType = {
     [key: string]: Array<TaskType>
 }
 
+export type TagsStateType = {
+    [key: string]: Array<TagType>
+}
+
 
 function App() {
 
     const todolists = useSelector<AppRootStateType, Array<TodolistType>>(state => state.todolists)
     const tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
+    const tags = useSelector<AppRootStateType, TagsStateType>(state => state.tags)
+
     const dispatch = useDispatch();
 
     const removeTask = useCallback(function (id: string, todolistId: string) {
@@ -43,6 +50,7 @@ function App() {
 
     const addTask = useCallback(function (title: string, todolistId: string) {
         dispatch(addTaskAC(title, todolistId));
+        dispatch(addTagAC(title, todolistId));
     }, [dispatch]);
 
     const changeStatus = useCallback(function (id: string, isDone: boolean, todolistId: string) {
@@ -86,6 +94,7 @@ function App() {
                     {
                         todolists.map(tl => {
                             let allTodolistTasks = tasks[tl.id];
+                            let allTodolistTags = tags[tl.id];
 
                             return <Grid item key={tl.id}>
                                 <Paper style={{padding: '10px'}}>
@@ -93,6 +102,7 @@ function App() {
                                         id={tl.id}
                                         title={tl.title}
                                         tasks={allTodolistTasks}
+                                        tags={allTodolistTags}
                                         removeTask={removeTask}
                                         changeFilter={changeFilter}
                                         addTask={addTask}

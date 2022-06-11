@@ -1,12 +1,14 @@
-import React, { useCallback } from 'react'
-import { AddItemForm } from './AddItemForm'
-import { EditableSpan } from './EditableSpan'
+import React, {useCallback} from 'react'
+import {AddItemForm} from './AddItemForm'
+import {EditableSpan} from './EditableSpan'
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
-import { Delete } from '@mui/icons-material';
-import { Task } from './Task'
-import { FilterValuesType } from './App';
+import {Delete} from '@mui/icons-material';
+import {Task} from './Task'
+import {FilterValuesType, TagsStateType} from './App';
 import {Tags} from "./Tags";
+import {useSelector} from "react-redux";
+import {AppRootStateType} from "./state/store";
 
 export type TaskType = {
     id: string
@@ -14,10 +16,16 @@ export type TaskType = {
     isDone: boolean
 }
 
+export type TagType = {
+    id: string
+    title: string
+}
+
 type PropsType = {
     id: string
     title: string
     tasks: Array<TaskType>
+    tags: Array<TagType>
     changeFilter: (value: FilterValuesType, todolistId: string) => void
     addTask: (title: string, todolistId: string) => void
     changeTaskStatus: (id: string, isDone: boolean, todolistId: string) => void
@@ -49,6 +57,7 @@ export const Todolist = React.memo(function (props: PropsType) {
 
 
     let tasksForTodolist = props.tasks
+    let tagsForTodolist = props.tags
 
     if (props.filter === 'active') {
         tasksForTodolist = props.tasks.filter(t => !t.isDone)
@@ -66,11 +75,13 @@ export const Todolist = React.memo(function (props: PropsType) {
         <AddItemForm addItem={addTask}/>
         <div>
             {
+
                 tasksForTodolist.map(t => <Task key={t.id} task={t} todolistId={props.id}
                                                 removeTask={props.removeTask}
                                                 changeTaskTitle={props.changeTaskTitle}
                                                 changeTaskStatus={props.changeTaskStatus}
-                />)
+                    />
+                )
             }
         </div>
         <div style={{paddingTop: '10px'}}>
@@ -87,7 +98,16 @@ export const Todolist = React.memo(function (props: PropsType) {
                     onClick={onCompletedClickHandler}
                     color={'secondary'}>Completed
             </Button>
-               <Tags tasks={tasksForTodolist} todolistId={props.id}/>
+            {/*<Tags tasks={tasksForTodolist} todolistId={props.id}/>*/}
+            <div>Tags:</div>
+            <ul>
+                {
+                    tagsForTodolist.map(tag => <Tags key={tag.id} tag={tag} todolistId={props.id}
+                            /*changeTag={props.changeTaskStatus}*/
+                        />
+                    )
+                }
+            </ul>
         </div>
     </div>
 })
