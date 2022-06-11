@@ -1,8 +1,7 @@
 import {TagType} from '../Todolist';
-import { v1 } from 'uuid';
-import { AddTodolistActionType, RemoveTodolistActionType } from './todolists-reducer';
+import {v1} from 'uuid';
+import {AddTodolistActionType, RemoveTodolistActionType} from './todolists-reducer';
 import {TagsStateType} from '../App';
-
 
 
 const tags = require('./tags.json')
@@ -17,10 +16,14 @@ export const tagsReducer = (state: TagsStateType = initialState, action: Actions
                 id: v1(),
                 title: action.title.slice(tagIndex, action.title.length)
             }
-            const tags = stateCopy[action.todolistId];
-            const newTags = [newTag, ...tags];
-            stateCopy[action.todolistId] = newTags;
-            return stateCopy;
+            if (!state[action.todolistId].map(t => t.title).join().includes(newTag.title)) {
+                const tags = stateCopy[action.todolistId];
+                const newTags = [newTag, ...tags];
+                stateCopy[action.todolistId] = newTags;
+                return stateCopy;
+            }
+            return state
+
         }/*
         case 'CHANGE-TAG': {
             let todolistTasks = state[action.todolistId];
@@ -70,7 +73,7 @@ export type ChangeTagActionType = {
 */
 
 
-type ActionsType =  AddTagActionType
+type ActionsType = AddTagActionType
     /*| ChangeTagActionType*/
     | AddTodolistActionType
     | RemoveTodolistActionType

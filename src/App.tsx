@@ -42,6 +42,8 @@ function App() {
     const tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
     const tags = useSelector<AppRootStateType, TagsStateType>(state => state.tags)
 
+    console.log(useSelector<AppRootStateType, any>(state => state))
+
     const dispatch = useDispatch();
 
     const removeTask = useCallback(function (id: string, todolistId: string) {
