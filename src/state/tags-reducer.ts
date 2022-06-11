@@ -1,4 +1,3 @@
-import {TagType} from '../Todolist';
 import {v1} from 'uuid';
 import {AddTodolistActionType, RemoveTodolistActionType} from './todolists-reducer';
 import {TagsStateType} from '../App';
@@ -12,7 +11,7 @@ export const tagsReducer = (state: TagsStateType = initialState, action: Actions
         case 'ADD-TAG': {
             const stateCopy = {...state}
             let tagIndex = action.title.indexOf('#');
-            const newTag: TagType = {
+            let newTag = {
                 id: v1(),
                 title: action.title.slice(tagIndex, action.title.length)
             }
@@ -23,16 +22,21 @@ export const tagsReducer = (state: TagsStateType = initialState, action: Actions
                 return stateCopy;
             }
             return state
-
-        }/*
-        case 'CHANGE-TAG': {
-            let todolistTasks = state[action.todolistId];
-            let newTasksArray = todolistTasks
-                .map(t => t.id === action.taskId ? {...t, isDone: action.isDone} : t);
-
-            state[action.todolistId] = newTasksArray;
+        }
+        case 'CHANGE-TAG-TITLE': {
+            let todolistTags = state[action.todolistId];
+            let tagIndex = action.newTitle.indexOf('#');
+            let newTagsArray = todolistTags
+                .map(t => action.newTitle.includes(t.title) ? {...t, title: action.newTitle.slice(tagIndex, action.newTitle.length)} : t);
+            state[action.todolistId] = newTagsArray;
             return ({...state});
-        }*/
+        }
+        case 'REMOVE-TAG': {
+            const stateCopy = {...state}
+            const tags = stateCopy[action.todolistId];
+            stateCopy[action.todolistId] = tags.filter(t => t.id !== action.tagId);
+            return stateCopy;
+        }
         case 'ADD-TODOLIST': {
             return {
                 ...state,
@@ -52,28 +56,30 @@ export const tagsReducer = (state: TagsStateType = initialState, action: Actions
 
 export const addTagAC = (title: string, todolistId: string): AddTagActionType => {
     return {type: 'ADD-TAG', title, todolistId}
-}/*
-export const changeTagAC = (taskId: string, todolistId: string, title: string): ChangeTagActionType => {
-    return {type: 'CHANGE-TAG', todolistId, taskId, title}
+
 }
-*/
+export const removeTagAC = (tagId: string, todolistId: string): RemoveTagActionType => {
+    return {type: 'REMOVE-TAG', tagId: tagId, todolistId: todolistId}
+}
+export const changeTagTitleAC = (newTitle: string, todolistId: string): ChangeTagTitleActionType => {
+    return {type: 'CHANGE-TAG-TITLE', newTitle: newTitle, todolistId: todolistId}
+}
+
 export type AddTagActionType = {
     type: 'ADD-TAG',
     todolistId: string
     title: string
 }
-/*
-
-export type ChangeTagActionType = {
-    type: 'CHANGE-TAG',
+export type RemoveTagActionType = {
+    type: 'REMOVE-TAG',
     todolistId: string
-    taskId: string
-    title: string
+    tagId: string
 }
-*/
-
-
-type ActionsType = AddTagActionType
-    /*| ChangeTagActionType*/
+export type ChangeTagTitleActionType = {
+    type: 'CHANGE-TAG-TITLE'
+    newTitle: string
+    todolistId: string
+}
+type ActionsType = AddTagActionType | RemoveTagActionType | ChangeTagTitleActionType
     | AddTodolistActionType
     | RemoveTodolistActionType

@@ -1,31 +1,33 @@
-import React from 'react'
+import React, {ChangeEvent, useCallback} from 'react'
 import {TagType} from './Todolist'
+import IconButton from "@mui/material/IconButton";
+import {Delete} from "@mui/icons-material";
 
 type TagPropsType = {
     tag: TagType
     todolistId: string
+    removeTag: (tagId: string, todolistId: string) => void
+    onTagFilterClickHandler: (tagTitle: string) => void
 }
 export const Tags = React.memo((props: TagPropsType) => {
 
-    /*let createTag = (arr: Array<string>) => {
-        let arrTitle = [...arr]
-        for (let i = 0; i <= arrTitle.length - 1; i++) {
-            let tagIndex = arrTitle[i].indexOf('#');
-            if (arrTitle[i].includes('#')) {
-                arrTitle[i] = arrTitle[i].slice(tagIndex, arrTitle[i].length)
-            } else {
-                delete arrTitle[i]
-            }
-        }
-        return arrTitle
-    }
-    let arrTagsTitle = createTag(props.tasks.map(t => t.title))
-    let filterTags = arrTagsTitle.filter((item, index) => arrTagsTitle.indexOf(item) === index)*/
+    const onClickHandler = useCallback(() => {
+        props.removeTag(props.tag.id, props.todolistId)
+    }, [props.tag.id, props.todolistId]);
 
+    const onTagFilterClickHandler = useCallback(() => {
+        props.onTagFilterClickHandler(props.tag.title)
+    }, [props.tag.title, props.todolistId]);
 
     return (
-        <>
-            <li key={props.todolistId}>{props.tag.title}</li>
-        </>
+        <span key={props.todolistId} style={{paddingRight: '20px'}}>
+            <button onClick={onTagFilterClickHandler}>
+                {props.tag.title}
+            </button>
+            <IconButton onClick={onClickHandler} style={{width: '20px', height: '20px'}}>
+                <Delete style={{width: '20px', height: '20px'}}/>
+            </IconButton>
+        </span>
+
     )
 })

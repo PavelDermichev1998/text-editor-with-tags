@@ -2,18 +2,15 @@
   "9f27f97b-bc63-4114-9baa-c91facbd4ffb": [
     {
       "id": "111",
-      "title": "I wont go",
-      "isDone": false
+      "title": "I wont go"
     },
     {
       "id": "222",
-      "title": "I wont go to the #shop",
-      "isDone": false
+      "title": "I wont go to the #shop"
     },
     {
       "id": "333",
-      "title": "I wont go to the #gym",
-      "isDone": false
+      "title": "I wont go to the #gym"
     }
   ]
 }
