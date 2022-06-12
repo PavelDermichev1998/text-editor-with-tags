@@ -15,7 +15,7 @@ export const tagsReducer = (state: TagsStateType = initialState, action: Actions
                 id: v1(),
                 title: action.title.slice(tagIndex, action.title.length)
             }
-            if (!state[action.todolistId].map(t => t.title).join().includes(newTag.title)) {
+            if (!state[action.todolistId].map(t => t.title).join().includes(newTag.title) && tagIndex !== -1) {
                 const tags = stateCopy[action.todolistId];
                 const newTags = [newTag, ...tags];
                 stateCopy[action.todolistId] = newTags;

@@ -2,7 +2,6 @@ import React, {useCallback} from 'react'
 import {AddItemForm} from './AddItemForm'
 import {EditableSpan} from './EditableSpan'
 import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
 import {Delete} from '@mui/icons-material';
 import {Task} from './Task'
 import {FilterValuesType} from './App';
@@ -78,17 +77,15 @@ export const Todolist = React.memo(function (props: PropsType) {
             }
         </div>
         <div>Tags:</div>
+        <button onClick={onAllClickHandler}>
+            All
+        </button>
         {
             props.tags.map(tag => <Tags key={tag.id} tag={tag} todolistId={props.id} removeTag={props.removeTag}
                                              onTagFilterClickHandler={onTagFilterClickHandler}
                 />
             )
         }
-        <div style={{paddingTop: '10px'}}>
-            <button onClick={onAllClickHandler}>
-                All
-            </button>
-        </div>
     </div>
 })
 
