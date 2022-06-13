@@ -1,0 +1,15 @@
+.todolist_tags_btn {
+  border-radius: 10px;
+  width: 50px;
+  border: 1px solid rgba(25, 118, 210);
+  margin-bottom: 10px;
+
+  &:hover {
+    background-color: rgba(25, 118, 210, 0.5);
+  }
+}
+
+.todolist_tags {
+  display: flex;
+  flex-direction: column;
+}

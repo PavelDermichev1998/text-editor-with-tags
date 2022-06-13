@@ -1,7 +1,7 @@
-import React, { useCallback } from 'react'
-import './App.module.css';
-import {TagType, TaskType, Todolist} from './Todolist';
-import { AddItemForm } from './AddItemForm';
+import React, {useCallback} from 'react'
+import './App.module.scss';
+import {TagType, TaskType, Todolist} from '../Todolist/Todolist';
+import {AddItemForm} from '../AddItemForm/AddItemForm';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -13,18 +13,17 @@ import {
     changeTodolistFilterAC,
     changeTodolistTitleAC,
     removeTodolistAC
-} from './state/todolists-reducer';
-import { addTaskAC, changeTaskTitleAC, removeTaskAC } from './state/tasks-reducer';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppRootStateType } from './state/store';
-import {addTagAC, changeTagTitleAC, removeTagAC} from "./state/tags-reducer";
+} from '../../state/todolists-reducer';
+import {addTaskAC, changeTaskTitleAC, removeTaskAC} from '../../state/tasks-reducer';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppRootStateType} from '../../state/store';
+import {addTagAC, changeTagTitleAC, removeTagAC, selectTagAC} from "../../state/tags-reducer";
 
 
-export type FilterValuesType = string
 export type TodolistType = {
     id: string
     title: string
-    filter: FilterValuesType
+    filter: string
 }
 
 export type TasksStateType = {
@@ -35,47 +34,40 @@ export type TagsStateType = {
     [key: string]: Array<TagType>
 }
 
-
 function App() {
 
     const todolists = useSelector<AppRootStateType, Array<TodolistType>>(state => state.todolists)
     const tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
     const tags = useSelector<AppRootStateType, TagsStateType>(state => state.tags)
-
-    console.log(useSelector<AppRootStateType, any>(state => state))
-
     const dispatch = useDispatch();
 
     const removeTask = useCallback(function (id: string, todolistId: string) {
         dispatch(removeTaskAC(id, todolistId));
     }, [dispatch]);
-
     const removeTag = useCallback(function (id: string, todolistId: string) {
         dispatch(removeTagAC(id, todolistId));
     }, [dispatch]);
-
     const addTask = useCallback(function (title: string, todolistId: string) {
         dispatch(addTaskAC(title, todolistId));
         dispatch(addTagAC(title, todolistId));
     }, [dispatch]);
-
     const changeTaskTitle = useCallback(function (id: string, newTitle: string, todolistId: string) {
         dispatch(changeTaskTitleAC(id, newTitle, todolistId));
         dispatch(changeTagTitleAC(newTitle, todolistId));
+        dispatch(addTagAC(newTitle, todolistId));
     }, [dispatch]);
-
-    const changeFilter = useCallback(function (value: FilterValuesType, todolistId: string) {
+    const selectTag = useCallback(function (select: boolean, value: string, todolistId: string) {
+        dispatch(selectTagAC(select, value, todolistId));
+    }, [dispatch]);
+    const changeFilter = useCallback(function (value: string, todolistId: string) {
         dispatch(changeTodolistFilterAC(todolistId, value));
     }, [dispatch]);
-
     const removeTodolist = useCallback(function (id: string) {
         dispatch(removeTodolistAC(id));
     }, [dispatch]);
-
     const changeTodolistTitle = useCallback(function (id: string, title: string) {
         dispatch(changeTodolistTitleAC(id, title));
     }, [dispatch]);
-
     const addTodolist = useCallback((title: string) => {
         dispatch(addTodolistAC(title));
     }, [dispatch]);
@@ -85,7 +77,7 @@ function App() {
             <AppBar position="static">
                 <Toolbar>
                     <Typography variant="h6">
-                        News
+                        Notes
                     </Typography>
                 </Toolbar>
             </AppBar>
@@ -114,6 +106,7 @@ function App() {
                                         removeTodolist={removeTodolist}
                                         changeTaskTitle={changeTaskTitle}
                                         changeTodolistTitle={changeTodolistTitle}
+                                        selectTag={selectTag}
                                     />
                                 </Paper>
                             </Grid>

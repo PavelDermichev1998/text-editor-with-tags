@@ -1,0 +1,12 @@
+.tag {
+  border-radius: 10px;
+  border: 1px solid rgba(25, 118, 210, 0.3);
+
+  &:hover {
+    background-color: rgba(25, 118, 210, 0.5);
+  }
+}
+
+.tag_select {
+  background-color: rgba(25, 118, 210, 0.5);
+}

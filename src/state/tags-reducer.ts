@@ -1,7 +1,6 @@
 import {v1} from 'uuid';
 import {AddTodolistActionType, RemoveTodolistActionType} from './todolists-reducer';
-import {TagsStateType} from '../App';
-
+import {TagsStateType} from '../Components/App/App';
 
 const tags = require('./tags.json')
 const initialState: TagsStateType = tags
@@ -10,14 +9,15 @@ export const tagsReducer = (state: TagsStateType = initialState, action: Actions
     switch (action.type) {
         case 'ADD-TAG': {
             const stateCopy = {...state}
+            const tags = stateCopy[action.todolistId];
             let tagIndex = action.title.indexOf('#');
             let newTag = {
                 id: v1(),
-                title: action.title.slice(tagIndex, action.title.length)
+                title: action.title.slice(tagIndex, action.title.length),
+                selected: true
             }
+            const newTags = [newTag, ...tags];
             if (!state[action.todolistId].map(t => t.title).join().includes(newTag.title) && tagIndex !== -1) {
-                const tags = stateCopy[action.todolistId];
-                const newTags = [newTag, ...tags];
                 stateCopy[action.todolistId] = newTags;
                 return stateCopy;
             }
@@ -26,9 +26,12 @@ export const tagsReducer = (state: TagsStateType = initialState, action: Actions
         case 'CHANGE-TAG-TITLE': {
             let todolistTags = state[action.todolistId];
             let tagIndex = action.newTitle.indexOf('#');
-            let newTagsArray = todolistTags
-                .map(t => action.newTitle.includes(t.title) ? {...t, title: action.newTitle.slice(tagIndex, action.newTitle.length)} : t);
-            state[action.todolistId] = newTagsArray;
+            state[action.todolistId] = todolistTags
+                .map(t => action.newTitle.includes(t.title) ? {
+                    ...t,
+                    selected: true,
+                    title: action.newTitle.slice(tagIndex, action.newTitle.length)
+                } : t);
             return ({...state});
         }
         case 'REMOVE-TAG': {
@@ -36,6 +39,12 @@ export const tagsReducer = (state: TagsStateType = initialState, action: Actions
             const tags = stateCopy[action.todolistId];
             stateCopy[action.todolistId] = tags.filter(t => t.id !== action.tagId);
             return stateCopy;
+        }
+        case 'SELECT-TAG': {
+            let todolistTags = state[action.todolistId];
+            state[action.todolistId] = todolistTags
+                .map(t => action.value.includes(t.title) ? {...t, selected: !action.select} : t);
+            return ({...state});
         }
         case 'ADD-TODOLIST': {
             return {
@@ -53,10 +62,8 @@ export const tagsReducer = (state: TagsStateType = initialState, action: Actions
     }
 }
 
-
 export const addTagAC = (title: string, todolistId: string): AddTagActionType => {
     return {type: 'ADD-TAG', title, todolistId}
-
 }
 export const removeTagAC = (tagId: string, todolistId: string): RemoveTagActionType => {
     return {type: 'REMOVE-TAG', tagId: tagId, todolistId: todolistId}
@@ -64,6 +71,10 @@ export const removeTagAC = (tagId: string, todolistId: string): RemoveTagActionT
 export const changeTagTitleAC = (newTitle: string, todolistId: string): ChangeTagTitleActionType => {
     return {type: 'CHANGE-TAG-TITLE', newTitle: newTitle, todolistId: todolistId}
 }
+export const selectTagAC = (select: boolean, value: string, todolistId: string): SelectTagActionType => {
+    return {type: 'SELECT-TAG', select: select, value: value, todolistId: todolistId}
+}
+
 
 export type AddTagActionType = {
     type: 'ADD-TAG',
@@ -80,6 +91,13 @@ export type ChangeTagTitleActionType = {
     newTitle: string
     todolistId: string
 }
+export type SelectTagActionType = {
+    type: 'SELECT-TAG'
+    select: boolean
+    value: string
+    todolistId: string
+}
 type ActionsType = AddTagActionType | RemoveTagActionType | ChangeTagTitleActionType
     | AddTodolistActionType
     | RemoveTodolistActionType
+    | SelectTagActionType

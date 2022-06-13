@@ -1,9 +1,7 @@
-import { TaskType } from '../Todolist';
-import { v1 } from 'uuid';
-import { AddTodolistActionType, RemoveTodolistActionType } from './todolists-reducer';
-import { TasksStateType } from '../App';
-
-
+import {TaskType} from '../Components/Todolist/Todolist';
+import {v1} from 'uuid';
+import {AddTodolistActionType, RemoveTodolistActionType} from './todolists-reducer';
+import {TasksStateType} from '../Components/App/App';
 
 const tasks = require('./tasks.json')
 const initialState: TasksStateType = tasks
@@ -23,16 +21,13 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
                 title: action.title,
             }
             const tasks = stateCopy[action.todolistId];
-            const newTasks = [newTask, ...tasks];
-            stateCopy[action.todolistId] = newTasks;
+            stateCopy[action.todolistId] = [newTask, ...tasks];
             return stateCopy;
         }
         case 'CHANGE-TASK-TITLE': {
             let todolistTasks = state[action.todolistId];
-            let newTasksArray = todolistTasks
+            state[action.todolistId] = todolistTasks
                 .map(t => t.id === action.taskId ? {...t, title: action.title} : t);
-
-            state[action.todolistId] = newTasksArray;
             return ({...state});
         }
         case 'ADD-TODOLIST': {
@@ -60,6 +55,7 @@ export const addTaskAC = (title: string, todolistId: string): AddTaskActionType 
 export const changeTaskTitleAC = (taskId: string, title: string, todolistId: string): ChangeTaskTitleActionType => {
     return {type: 'CHANGE-TASK-TITLE', title, todolistId, taskId}
 }
+
 
 export type RemoveTaskActionType = {
     type: 'REMOVE-TASK',

@@ -2,13 +2,13 @@ import React, { ChangeEvent, KeyboardEvent, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import { AddBox } from '@mui/icons-material';
+import style from './AddItemForm.module.scss'
 
 type AddItemFormPropsType = {
     addItem: (title: string) => void
 }
 
 export const AddItemForm = React.memo(function (props: AddItemFormPropsType) {
-    console.log('AddItemForm called')
 
     let [title, setTitle] = useState('')
     let [error, setError] = useState<string | null>(null)
@@ -30,12 +30,12 @@ export const AddItemForm = React.memo(function (props: AddItemFormPropsType) {
         if (error !== null) {
             setError(null);
         }
-        if (e.charCode === 13) {
+        if (e.code === "Enter") {
             addItem();
         }
     }
 
-    return <div>
+    return <div className={style.add_item_form}>
         <TextField variant="outlined"
                    error={!!error}
                    value={title}

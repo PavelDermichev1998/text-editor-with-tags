@@ -2,11 +2,13 @@
   "9f27f97b-bc63-4114-9baa-c91facbd4ffb": [
     {
       "id": "111",
-      "title": "#shop"
+      "title": "#shop",
+      "selected": "true"
     },
     {
       "id": "222",
-      "title": "#gym"
+      "title": "#gym",
+      "selected": "true"
     }
   ]
 }
